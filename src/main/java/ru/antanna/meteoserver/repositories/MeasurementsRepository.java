@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface MeasurementsRepository extends JpaRepository<Measurement, Long> {
 
-    List<Measurement> findByReceivedAtAfterOrderByReceivedAtAsc(Instant since);
+//    List<Measurement> findByReceivedAtAfterOrderByReceivedAtAsc(Instant since);
 
     List<Measurement> findByReceivedAtBetweenOrderByReceivedAtAsc(Instant from, Instant to);
 
