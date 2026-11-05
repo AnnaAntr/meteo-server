@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Метеостанция</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<section th:if="${last != null}">
+    <h1>Текущие показания</h1>
+    <div class="current">
+        <div class="value">
+            <span class="label">Температура</span>
+            <span class="number" th:text="${#numbers.formatDecimal(last.temperature, 1, 1)} + ' °C'">21,5 °C</span>
+        </div>
+        <div class="value">
+            <span class="label">Влажность</span>
+            <span class="number" th:text="${#numbers.formatDecimal(last.humidity, 1, 1)} + ' %'">44,0 %</span>
+        </div>
+        <div class="value">
+            <span class="label">Устройство</span>
+            <span th:text="${last.deviceId}">esp32-meteo</span>
+        </div>
+        <div class="value">
+            <span class="label">Последнее измерение</span>
+            <span th:text="${#temporals.format(last.receivedAt.atZone(zoneId), 'dd.MM.yyyy HH:mm:ss')}">01.01.2026 12:00:00</span>
+        </div>
+    </div>
+</section>
+
+<p class="empty" th:if="${last == null}">Данных пока нет.</p>
+
+<section>
+    <h2>Последние измерения</h2>
+    <table th:if="${!#lists.isEmpty(measurements)}">
+        <thead>
+        <tr>
+            <th>Время</th>
+            <th>Устройство</th>
+            <th>Температура, °C</th>
+            <th>Влажность, %</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m : ${measurements}">
+            <td th:text="${#temporals.format(m.receivedAt.atZone(zoneId), 'dd.MM.yyyy HH:mm:ss')}">01.01.2026 12:00:00</td>
+            <td th:text="${m.deviceId}">esp32-meteo</td>
+            <td th:text="${#numbers.formatDecimal(m.temperature, 1, 1)}">21,5</td>
+            <td th:text="${#numbers.formatDecimal(m.humidity, 1, 1)}">44,0</td>
+        </tr>
+        </tbody>
+    </table>
+    <p class="empty" th:if="${#lists.isEmpty(measurements)}">Данных пока нет.</p>
+</section>
+
+</body>
+</html>

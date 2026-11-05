@@ -46,4 +46,8 @@ public class MeasurementService {
     public Optional<Measurement> findLast() {
         return measurementsRepository.findFirstByOrderByReceivedAtDesc();
     }
+
+    public List<Measurement> findRecent() {
+        return measurementsRepository.findTop50ByOrderByReceivedAtDesc();
+    }
 }
