@@ -54,6 +54,18 @@ table {
     border-collapse: collapse;
 }
 
+.charts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.chart-wrap {
+    position: relative;
+    flex: 1 1 24rem;
+    height: 20rem;
+}
+
 th,
 td {
     padding: 0.5rem 0.75rem;

@@ -3,6 +3,8 @@ package ru.antanna.meteoserver.controllers;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,8 @@ import ru.antanna.meteoserver.models.Measurement;
 import ru.antanna.meteoserver.services.MeasurementService;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -19,9 +23,12 @@ import java.util.List;
 public class MeasurementController {
 
     private final MeasurementService measurementService;
+    private final ZoneId timeZone;
 
-    public MeasurementController(MeasurementService measurementService) {
+    @Autowired
+    public MeasurementController(MeasurementService measurementService, @Value("${app.time-zone:Europe/Moscow}") String displayZone) {
         this.measurementService = measurementService;
+        this.timeZone = ZoneId.of(displayZone);
     }
 
     @PostMapping("/measurements")
@@ -40,5 +47,10 @@ public class MeasurementController {
         Instant to = Instant.now();
         Instant from = to.minus(hours, ChronoUnit.HOURS);
         return measurementService.findForPeriod(from, to);
+    }
+
+    @GetMapping("/measurements/today")
+    public List<Measurement> getToday() {
+        return measurementService.findForDay(LocalDate.now(timeZone), timeZone);
     }
 }

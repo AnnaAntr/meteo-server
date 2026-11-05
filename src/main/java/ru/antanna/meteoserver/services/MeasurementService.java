@@ -7,6 +7,8 @@ import ru.antanna.meteoserver.models.Measurement;
 import ru.antanna.meteoserver.repositories.MeasurementsRepository;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,16 +40,18 @@ public class MeasurementService {
     public List<Measurement> findForPeriod(Instant from, Instant to) {
         return measurementsRepository.findByReceivedAtBetweenOrderByReceivedAtAsc(from, to);
     }
-    
+
+    public List<Measurement> findForDay(LocalDate day, ZoneId zone) {
+        Instant from = day.atStartOfDay(zone).toInstant();
+        Instant to = day.plusDays(1).atStartOfDay(zone).toInstant();
+        return measurementsRepository.findByReceivedAtBetweenOrderByReceivedAtAsc(from, to);
+    }
+
     public List<Measurement> find50Last() {
         return measurementsRepository.findTop50ByOrderByReceivedAtDesc();
     }
     
     public Optional<Measurement> findLast() {
         return measurementsRepository.findFirstByOrderByReceivedAtDesc();
-    }
-
-    public List<Measurement> findRecent() {
-        return measurementsRepository.findTop50ByOrderByReceivedAtDesc();
     }
 }
